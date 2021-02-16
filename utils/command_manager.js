@@ -39,7 +39,6 @@ class CommandManager {
         "войти":(msg)=>{
             let name = msg.content.split(" ");
             name = name.slice(1).join(" ")
-            logger.warn("1"+name+"1")
             if(/[^А-Яа-я ]/.test(name)){
                 var embed_error = new Discord.MessageEmbed()
                 embed_error
@@ -66,6 +65,7 @@ class CommandManager {
             embed
                 .setColor("#2f3136")
                 .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
+                .setImage("https://im3.ezgif.com/tmp/ezgif-3-6761d8f04209.gif")
                 .setDescription(`Вы успешно зарегестрированы как \`${name}\``);
             
             msg.channel.send(embed);
