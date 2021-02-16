@@ -109,9 +109,8 @@ class CommandManager {
                     .setThumbnail(owner.avatarURL())
                     .addField("Сыллки",
                         `[\`[Пригласить бота]\`](https://discord.com/api/oauth2/authorize?client_id=683258927311618101&permissions=117824&scope=bot)\n`+
-                        `[\`[GitHub]\`](https://github.com/VVSnitka/Stalker-Bot)\n*Код в скорем времени будет доступен*`
+                        `[\`[GitHub]\`](https://github.com/VVSnitka/Stalker-Bot)`
                     )
-                    .addField("Исходный код",)
                 )
             })
         }
