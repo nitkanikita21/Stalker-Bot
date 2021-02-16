@@ -39,6 +39,27 @@ class CommandManager {
         "войти":(msg)=>{
             let name = msg.content.split(" ");
             name = name.slice(1).join(" ")
+            logger.warn("1"+name+"1")
+            if(/[^А-Яа-я ]/.test(name)){
+                var embed_error = new Discord.MessageEmbed()
+                embed_error
+                    .setColor("#2f3136")
+                    .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
+                    .setDescription(`Только кирилица!`);
+            
+                msg.channel.send(embed_error);
+                return
+            }
+            if(name == ""){
+                var embed_error = new Discord.MessageEmbed()
+                embed_error
+                    .setColor("#2f3136")
+                    .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
+                    .setDescription(`Пустой ник нельзя! :)`);
+            
+                msg.channel.send(embed_error);
+                return
+            }
             usersManager.register(msg.author.id,name,msg.author.avatarURL());
             
             let embed = new Discord.MessageEmbed();
