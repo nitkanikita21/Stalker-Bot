@@ -18,13 +18,16 @@ class CommandManager {
                 bot_msg.react("🔐").then(my_react=>{
                     this.awaitReaction(bot_msg,msg.author,"🔐",
                         ()=>{
-                            logger.log("React")
                             let name = msg.author.username
-                            usersManager.register(msg.author.id,name,msg.author.avatarURL());
+                            usersManager.register({
+                                id:msg.author.id,
+                                tag:msg.author.tag
+                            },name,msg.author.avatarURL());
                             let embed = new Discord.MessageEmbed();
                             embed
                                 .setColor("#2f3136")
                                 .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
+                                .setImage("https://i.imgur.com/sMBguw1.png")
                                 .setDescription(`Вы успешно зарегестрированы как \`${name}\``);
                             bot_msg.edit(embed)
                             my_react.remove(this.client.user);
@@ -59,16 +62,20 @@ class CommandManager {
                 msg.channel.send(embed_error);
                 return
             }
-            usersManager.register(msg.author.id,name,msg.author.avatarURL());
+            usersManager.register({
+                id:msg.author.id,
+                tag:msg.author.tag
+            },name,msg.author.avatarURL());
             
             let embed = new Discord.MessageEmbed();
             embed
                 .setColor("#2f3136")
                 .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
-                .setImage("https://im3.ezgif.com/tmp/ezgif-3-6761d8f04209.gif")
+                .setImage("https://i.imgur.com/sMBguw1.png")
                 .setDescription(`Вы успешно зарегестрированы как \`${name}\``);
             
             msg.channel.send(embed);
+            
         },
         "инвентарь":(msg)=>{
             if(!usersManager.checkRegUser(msg.author.id)){
@@ -121,7 +128,7 @@ class CommandManager {
 
             let player = usersManager.getPlayerFromId(msg.author.id);
             let locations = player.allSubLocations;
-            
+
             let str = [];
             locations.map((c,i)=>{
                 str[i] = `${i}. \`${c.name}\``
@@ -135,9 +142,42 @@ class CommandManager {
                 .addField("Отправится в:",str.join("\n"))
                 .setFooter("Нажми на номер нужной локации")
             
-            msg.channel.send(embed).then(msg=>{
+            msg.channel.send(embed).then(msg_bot=>{
+                let reactions = []
+                let client_link = this.client;
                 for(let i = 0; i < locations.length; i++){
-                    msg.react(extra.getReactFromInt(i))
+                    msg_bot.react(extra.getReactFromInt(i)).then(reaction=>{
+                        reactions.push(reaction)
+                        this.awaitReaction(
+                            msg_bot,
+                            msg.author,
+                            extra.getReactFromInt(i),
+                            ()=>{
+
+                                reaction.remove(msg.author)
+                                reactions.forEach(r=>{
+                                    r.remove(client_link.user)
+                                })
+                                msg_bot.edit(
+                                    new Discord.MessageEmbed()
+                                    .setAuthor("Смена локации")
+                                    .setDescription("Это может занять некоторое время...")
+                                )
+                                player.transit(
+                                    locations[i].id,
+                                    ()=>{
+                                        msg_bot.edit(
+                                            new Discord.MessageEmbed()
+                                            .setColor("#2f3136")
+                                            .setAuthor("ПДА: Местоположение",this.client.user.avatarURL())
+                                            .setDescription(`**${player.location.location.name}**\n   *${player.location.sublocation.name}*`)
+                                        )
+                                    }
+                                )
+
+                            }
+                        )
+                    })
                 }
             });            
         },

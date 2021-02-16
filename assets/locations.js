@@ -24,7 +24,7 @@ class SubLocation{
     name = "";
     id   = "";
     npcs = [];
-    transitions = [];
+    transit = null;
     constructor(name,id,transit,npcs){
         this.name = name;
         this.id = id;
@@ -92,10 +92,46 @@ module.exports.locations = [
             ),
             new SubLocation(
                 "Переход на свалку",
-                "bridge_tunel",
+                "transit_svalka",
                 {
                     locate:"svalka",
                     sublocation:"cemetery"
+                },
+                [
+                    
+                ]
+            )
+        ]
+    ),
+    new Location(
+        "Свалка",
+        "Место тусовки бандитов",
+        "svalka",
+        1000,
+        [
+            new SubLocation(
+                "Кладбище техники",
+                "cemetery",
+                null,
+                [
+                    
+                ]
+            ),
+            
+            new SubLocation(
+                "Застава долга",
+                "dolg_outpost",
+                null,
+                [
+                    
+                ]
+            ),
+            new SubLocation(
+                "Переход на Кордон",
+                "transit_kordon",
+                {
+                    locate:"kordon",
+                    sublocation:"broken_bridge"
                 },
                 [
                     
