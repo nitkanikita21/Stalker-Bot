@@ -17,7 +17,6 @@ class Location {
         return this.sublocations.find((i)=>i.id == id);
     }
     get allSubLoc(){
-        console.log(this.sublocations)
         return this.sublocations;
     }
 }
@@ -26,11 +25,11 @@ class SubLocation{
     id   = "";
     npcs = [];
     transitions = [];
-    constructor(name,id,transitions,npcs){
+    constructor(name,id,transit,npcs){
         this.name = name;
         this.id = id;
         this.npcs = npcs;
-        this.transitions = transitions;
+        this.transit = transit;
     }
 }
 
@@ -49,7 +48,7 @@ module.exports.locations = [
             new SubLocation(
                 "Деревня новичков",
                 "novice_village",
-                [],
+                null,
                 [
                     new Trader(
                         "Сидорович",
@@ -70,7 +69,7 @@ module.exports.locations = [
             new SubLocation(
                 "АТП",
                 "atp",
-                [],
+                null,
                 [
                     
                 ]
@@ -78,7 +77,7 @@ module.exports.locations = [
             new SubLocation(
                 "Разрушеный мост",
                 "broken_bridge",
-                [],
+                null,
                 [
                     
                 ]
@@ -86,7 +85,18 @@ module.exports.locations = [
             new SubLocation(
                 "Тунель под насыпью",
                 "bridge_tunel",
-                [],
+                null,
+                [
+                    
+                ]
+            ),
+            new SubLocation(
+                "Переход на свалку",
+                "bridge_tunel",
+                {
+                    locate:"svalka",
+                    sublocation:"cemetery"
+                },
                 [
                     
                 ]

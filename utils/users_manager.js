@@ -27,7 +27,6 @@ class Player {
     get allSubLocations () {
         let loc = LocationManager.findById(this.currentLocation.loc);
         let sublocations = loc.allSubLoc;
-        console.log(sublocations)
         return sublocations.filter(i=>i.id !== this.currentLocation.sub);
     }
 }

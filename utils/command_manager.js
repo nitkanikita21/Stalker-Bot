@@ -116,7 +116,6 @@ class CommandManager {
             
             msg.channel.send(embed).then(msg=>{
                 for(let i = 0; i < locations.length; i++){
-                    console.log(this.client.emojis.cache.find(e=>e.name == extra.getReactFromInt(i)))
                     msg.react(extra.getReactFromInt(i))
                 }
             });            
