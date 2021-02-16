@@ -56,9 +56,9 @@ module.exports.items = [
     ),
     new Armor(
         "test_armor",
-        "Броня грешника",
+        "Тестовая броня",
         "А чё",
         450000,
-        "https://static.wikia.nocookie.net/stalker_ru_gamepedia/images/2/2e/%D0%98%D0%BA%D0%BE%D0%BD%D0%BA%D0%B0_%D0%BA%D0%BE%D0%BC%D0%B1%D0%B8%D0%BD%D0%B5%D0%B7%D0%BE%D0%BD%D0%B0_%D1%81%D1%82%D0%B0%D0%BB%D0%BA%D0%B5%D1%80%D0%B0.jpg/revision/latest/scale-to-width-down/250?cb=20170724225746"
+        "https://static.wikia.nocookie.net/modistalker/images/5/5e/9190166.gif/revision/latest?cb=20171014155446&path-prefix=ru"
     )
 ]

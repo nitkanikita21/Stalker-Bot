@@ -16,6 +16,10 @@ function Start(){
     })
     client.on("ready",()=>{
         logger.log("Bot online")
+        client.user.setActivity({
+            type:"WATCHING",
+            name:config.client.status
+        });
     })
 
     client.login(require("../ds.json").token)

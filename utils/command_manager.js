@@ -15,20 +15,24 @@ class CommandManager {
                 .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
                 .setDescription(`К сожалению вы не вошли в систему!\nВы можете быстро ввойти в систему нажав на 🔐`);
             msg.channel.send(embed).then(bot_msg=>{
-                bot_msg.react("🔐");
-                this.awaitReaction(bot_msg,msg.author,"🔐",
-                    ()=>{
-                        logger.log("React")
-                        let name = msg.author.username
-                        usersManager.register(msg.author.id,name,msg.author.avatarURL());
-                        let embed = new Discord.MessageEmbed();
-                        embed
-                            .setColor("#2f3136")
-                            .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
-                            .setDescription(`Вы успешно зарегестрированы как \`${name}\``);
-                        bot_msg.channel.send(embed);
-                    }
-                )
+                bot_msg.react("🔐").then(my_react=>{
+                    this.awaitReaction(bot_msg,msg.author,"🔐",
+                        ()=>{
+                            logger.log("React")
+                            let name = msg.author.username
+                            usersManager.register(msg.author.id,name,msg.author.avatarURL());
+                            let embed = new Discord.MessageEmbed();
+                            embed
+                                .setColor("#2f3136")
+                                .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
+                                .setDescription(`Вы успешно зарегестрированы как \`${name}\``);
+                            bot_msg.edit(embed)
+                            my_react.remove(this.client.user);
+                            my_react.remove(msg.author);
+                        }
+                    )
+                })
+                
             })
     }
     commands = {
