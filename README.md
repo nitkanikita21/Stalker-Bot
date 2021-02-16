@@ -1,5 +1,5 @@
 # Stalker-Bot
-**Discord бот по вселенной S.T.A.L.K.E.R**
+#### Discord Bot
 
 ## What is this bot for?
 This bot is some kind of RPG game in the S.T.A.L.K.E.R universe
