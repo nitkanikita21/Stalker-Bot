@@ -82,16 +82,19 @@ class CommandManager {
         "реакция":(msg)=>{
 
             msg.channel.send("Сообщение").then(message=>{
-                message.react(this.client.emojis.cache.get("668923953515069440"))
+                message.react(this.client.emojis.cache.get("668923953515069440")).then(my_react=>{
+                    
+                    this.awaitReaction(
+                        message,
+                        msg.author,
+                        "668923953515069440",
+                        ()=>{
+                            my_react.remove(this.client.user);
+                            msg.reply("<:monowut:668923953515069440>");
+                        }
+                    )
+                })
 
-                this.awaitReaction(
-                    message,
-                    msg.author,
-                    "668923953515069440",
-                    ()=>{
-                        msg.reply("Wow!")
-                    }
-                )
             })
         },
         "бот":(msg)=>{
@@ -104,9 +107,12 @@ class CommandManager {
                     .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
                     .addField("Автор",`*\`${owner.tag}\`*`)
                     .setThumbnail(owner.avatarURL())
-                    .addField("Приглашение",`[\`[Пригласить бота]\`](https://discord.com/api/oauth2/authorize?client_id=683258927311618101&permissions=117824&scope=bot)`)
-                    .addField("Исходный код",`[\`[GitHub]\`](https://github.com/VVSnitka/Stalker-Bot)\n*Код в скорем времени будет доступен*`)
+                    .addField("Сыллки",
+                        `[\`[Пригласить бота]\`](https://discord.com/api/oauth2/authorize?client_id=683258927311618101&permissions=117824&scope=bot)\n`+
+                        `[\`[GitHub]\`](https://github.com/VVSnitka/Stalker-Bot)\n*Код в скорем времени будет доступен*`
                     )
+                    .addField("Исходный код",)
+                )
             })
         }
 
