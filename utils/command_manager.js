@@ -5,7 +5,32 @@ const Discord = require("discord.js");
 const extra_log = require("./extra/logger.js");
 const logger = new extra_log(__filename);
 
+
+
 class CommandManager {
+    fastlogin = (msg)=>{
+        let embed = new Discord.MessageEmbed();
+            embed
+                .setColor("#2f3136")
+                .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
+                .setDescription(`К сожалению вы не вошли в систему!\nВы можете быстро ввойти в систему нажав на 🔐`);
+            msg.channel.send(embed).then(bot_msg=>{
+                bot_msg.react("🔐");
+                this.awaitReaction(bot_msg,msg.author,"🔐",
+                    ()=>{
+                        logger.log("React")
+                        let name = msg.author.username
+                        usersManager.register(msg.author.id,name,msg.author.avatarURL());
+                        let embed = new Discord.MessageEmbed();
+                        embed
+                            .setColor("#2f3136")
+                            .setAuthor("S.T.A.L.K.E.R RP",this.client.user.avatarURL())
+                            .setDescription(`Вы успешно зарегестрированы как \`${name}\``);
+                        bot_msg.channel.send(embed);
+                    }
+                )
+            })
+    }
     commands = {
         "войти":(msg)=>{
             let name = msg.content.split(" ");
@@ -21,10 +46,12 @@ class CommandManager {
             msg.channel.send(embed);
         },
         "инвентарь":(msg)=>{
+            if(!usersManager.checkRegUser(msg.author.id)){
+                this.fastlogin(msg)
+                return
+            }
             let player = usersManager.getPlayerFromId(msg.author.id);
             let inventory = player.inventory;
-
-            console.log(player.inventory)
 
             let inv_text = [];
 
@@ -38,11 +65,17 @@ class CommandManager {
                 .setThumbnail(inventory.armor.icon)
                 .addField("Надето",inventory.armor.name)
                 .addField("В сумке",inv_text.join("\n"))
+                .addField("Общая сумма",inventory.totalMass+"кг")
                 .setColor("#2f3136")
             
             msg.channel.send(embed);
         },
         "профиль":(msg)=>{
+            if(!usersManager.checkRegUser(msg.author.id)){
+                this.fastlogin(msg)
+                return
+            }
+
             let player = usersManager.getPlayerFromId(msg.author.id);
             
             let embed = new Discord.MessageEmbed();
@@ -56,6 +89,11 @@ class CommandManager {
             msg.channel.send(embed);
         },
         "локация":(msg)=>{
+            if(!usersManager.checkRegUser(msg.author.id)){
+                this.fastlogin(msg)
+                return
+            }
+
             let player = usersManager.getPlayerFromId(msg.author.id);
             let locations = player.allSubLocations;
             
@@ -87,7 +125,7 @@ class CommandManager {
                     this.awaitReaction(
                         message,
                         msg.author,
-                        "668923953515069440",
+                        "<:monowut:668923953515069440>",
                         ()=>{
                             my_react.remove(this.client.user);
                             msg.reply("<:monowut:668923953515069440>");
@@ -125,17 +163,15 @@ class CommandManager {
             this.commands[cmd_name](msg);
         }
     }
-    awaitReaction (message,usr,react_id,callback) {
+    awaitReaction (message,usr,react,callback) {
         function tick (cmd_manager){
             const filter = (reaction, user) => {
-                return reaction.emoji.id === react_id && user.id === usr.id &&user.id !== cmd_manager.client.user.id
+                return reaction.emoji.toString() === react && user.id === usr.id &&user.id !== cmd_manager.client.user.id
             }
             message.awaitReactions(filter, { time:100 })
                 .then(collected => {
                     if(collected.size > 0){
-                        logger.log("Pressed react")
                         callback();
-                        console.log(this)
                         clearInterval(this);
                     }
                 })

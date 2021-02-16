@@ -41,6 +41,10 @@ class UsersManager {
     getPlayerFromId(user_id){
         return this.users[user_id];
     }
+    checkRegUser(id){
+        if(this.users[id] !== undefined)return true;
+        else return false;
+    }
 }
 
 module.exports = new UsersManager();

@@ -9,7 +9,7 @@ class Inventory{
             let mass = i.mass;
             finalSumm += mass;
         })
-        return finalSumm;
+        return (finalSumm/1000).toString();
     }
     Equip(i){
         if(this.bag[i] == undefined){
