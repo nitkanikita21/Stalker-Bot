@@ -1,4 +1,4 @@
-const { Trader } = require("./persons.js");
+const npcs = require("./persons.js");
 
 class Location {
     name = "";
@@ -23,13 +23,24 @@ class Location {
 class SubLocation{
     name = "";
     id   = "";
-    npcs = [];
+    entitys = [];
     transit = null;
     constructor(name,id,transit,npcs){
         this.name = name;
         this.id = id;
-        this.npcs = npcs;
+        this.entitys = npcs;
         this.transit = transit;
+    }
+    findEntityById(id){
+        return this.entitys.find(e=>e.id === id);
+    }
+    checkEntityById(id){
+        return this.findEntityById(id).npc
+    }
+    entityIsTrader(id){
+        let npc = this.findEntityById(id);
+        console.log(npc instanceof npcs.Trader)
+        return npc instanceof npcs.Trader;
     }
 }
 
@@ -50,19 +61,37 @@ module.exports.locations = [
                 "novice_village",
                 null,
                 [
-                    new Trader(
+                    new npcs.Trader(
                         "Сидорович",
+                        "Торгует вещами для новичков в своём подвале",
+                        "https://i.imgur.com/qUZqi4O.jpg",
                         "sidor",
                         {
-                            "ak47":{
+                            "akm74":{
                                 cost:22000,
                                 chance:60
                             },
                             "bread":{
                                 cost:120,
                                 chance:90
-                            }
+                            },
+                            "medicine_chest_standart":{
+                                cost:90,
+                                chance:75
+                            },
+                            "medicine_chest_army":{
+                                cost:310,
+                                chance:45
+                            },
+                            "medicine_chest_science":{
+                                cost:420,
+                                chance:15
+                            },
                         }
+                    ),
+                    new npcs.NPC(
+                        "Волк",
+                        "https://i.imgur.com/SfZqee4.jpg"
                     )
                 ]
             ),

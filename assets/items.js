@@ -54,6 +54,44 @@ module.exports.items = [
         10,
         "https://i.pinimg.com/originals/77/b6/2d/77b62d8854cae578b63b2f338fb26d0e.png"
     ),
+    new Item(
+        "medicine_chest_standart",
+        "Аптечка",
+        "Ваше спасение",
+        10,
+        "https://i.imgur.com/Q9D6ytg.jpg"
+    ),
+    new Item(
+        "medicine_chest_army",
+        "Армейская аптечка",
+        "Ваше спасение",
+        25,
+        "https://i.imgur.com/pXB4gGx.jpg"
+    ),
+    new Item(
+        "medicine_chest_science",
+        "Научная аптечка",
+        "Ваше спасение",
+        34,
+        "https://i.imgur.com/ec6nnrO.png"
+    ),
+
+    new Item(
+        "bread",
+        "Буханка хлеба",
+        "Ешь вместе с едой",
+        34,
+        "https://i.imgur.com/WxpE65j.jpg"
+    ),
+
+    new Item(
+        "akm74",
+        "АКM-74",
+        "Работает безотказно",
+        40000,
+        "https://i.imgur.com/gAXMr0Y.jpg"
+    ),
+    
     new Armor(
         "test_armor",
         "Тестовая броня",

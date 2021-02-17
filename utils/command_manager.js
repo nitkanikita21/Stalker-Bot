@@ -1,4 +1,5 @@
 const usersManager = require("./users_manager.js");
+const itemManager = require("./game/item_manager.js");
 const extra = require("./extra/reactions.js");
 const Discord = require("discord.js");
 
@@ -180,6 +181,86 @@ class CommandManager {
                     })
                 }
             });            
+        },
+        "люди":(msg)=>{
+            if(!usersManager.checkRegUser(msg.author.id)){
+                this.fastlogin(msg)
+                return
+            }
+
+            let player = usersManager.getPlayerFromId(msg.author.id);
+            let loc = player.location.location
+            let subloc = player.location.sublocation;
+
+            let entitys = player.location.sublocation.entitys;
+
+            let str = [];
+            entitys.map((c,i)=>{
+                str[i] = `${i}. \`${c.name}\``
+            })
+            if(entitys.length == 0){
+                str[0] = "`Похоже здесь людей нет...`"
+            }
+
+            let embed = new Discord.MessageEmbed();
+            embed
+                .setColor("#2f3136")
+                .setAuthor("ПДА: Люди",this.client.user.avatarURL())
+                .setDescription(`**${loc.name}**\n   *${subloc.name}*`)
+                .addField("Люди:",str.join("\n"))
+                .addField("Примечание","Взаемодействие доступно только для NPC\nторговцев и квестовых персонажей\n \nДля игроков выводится информация о них")
+                .setFooter("Нажми на номер нужного человека")
+            
+            msg.channel.send(embed).then(msg_bot=>{
+                let reactions = []
+                let client_link = this.client;
+
+                for(let i = 0; i < entitys.length; i++){
+                    msg_bot.react(extra.getReactFromInt(i)).then(reaction=>{
+                        let npc = entitys[i]
+                        reactions.push(reaction)
+
+                        this.awaitReaction(
+                            msg_bot,
+                            msg.author,
+                            extra.getReactFromInt(i),
+                            ()=>{
+                                reaction.remove(msg.author)
+                                reactions.forEach(r=>{
+                                    r.remove(client_link.user)
+                                })
+
+                                if(subloc.entityIsTrader(entitys[i].id)){
+
+                                    let str_items = []
+                                    npc.trade_list.map((c,i)=>{
+                                        console.log(c)
+                                        let item = itemManager.findById(c.id)
+                                        str_items[i] = `${i}. \`${item.name}\` *${c.info.cost}RU*`
+                                    })
+
+                                    let embed_trade = new Discord.MessageEmbed();
+                                    embed_trade
+                                        .setColor("#2f3136")
+                                        .setAuthor(`${npc.name}: Предметы в продаже`,npc.icon)
+                                        .setDescription(`**${loc.name}**\n   *${subloc.name}*`)
+                                        .addField("Предметы:",str_items.join("\n"))
+
+                                    msg.channel.send(embed_trade)
+                                }else {
+                                    let embed_entity = new Discord.MessageEmbed();
+                                    embed_entity
+                                        .setColor("#2f3136")
+                                        .setAuthor(npc.name,npc.icon)
+                                        .setDescription(`${npc.desc}`)
+
+                                    msg.channel.send(embed_entity)
+                                }
+                            }
+                        )
+                    })
+                }
+            })
         },
         "реакция":(msg)=>{
 
