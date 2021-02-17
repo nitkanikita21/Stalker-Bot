@@ -91,6 +91,7 @@ module.exports.locations = [
                     ),
                     new npcs.NPC(
                         "Волк",
+                        "Главный в `Деревне новичков`",
                         "https://i.imgur.com/SfZqee4.jpg"
                     )
                 ]
