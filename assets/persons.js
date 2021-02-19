@@ -9,6 +9,14 @@ class Person{
         this.icon = icon;
     }
 }
+class PlayerPeson extends Person {
+    id = "";
+    constructor(name,icon,id){
+        super(name,icon)
+        this.name = name;
+        this.id = id;
+    }
+}
 class NPC extends Person{
     id   = "";
     npc = true;
@@ -49,7 +57,8 @@ class Trader extends NPC{
 }
 
 module.exports = {
-    Person : Person,
-    NPC    : NPC,
-    Trader : Trader
+    Person      : Person,
+    NPC         : NPC,
+    Trader      : Trader,
+    PlayerPeson : PlayerPeson
 }

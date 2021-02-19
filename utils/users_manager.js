@@ -7,24 +7,31 @@ const extra_log = require("./extra/logger.js");
 const logger = new extra_log(__filename);
 
 class Player {
-    person = new npc.Person();
+    person = new npc.PlayerPeson();
     inventory = new Inventory();
+    user = {}
     currentLocation = {
         loc:"kordon",
         sub:"novice_village"
     }
 
 
-    constructor(PersonName,ava){
-        this.person = new npc.Person(PersonName,ava);
+    constructor(PersonName,ava,user){
+        this.user = user;
+        this.person = new npc.PlayerPeson(PersonName,ava,user.id);
         this.inventory.add(ItemManager.findById("icon_group"));
         this.inventory.armor = ItemManager.findById("test_armor");
+
+        let loc = LocationManager.findById(this.currentLocation.loc)
+        loc.findByIdSubLoc(this.currentLocation.sub).addPerson(this.person)
     }
     transit(sublocate_id,callback){
         let loc = LocationManager.findById(this.currentLocation.loc)
         if(loc.findByIdSubLoc(sublocate_id) === undefined)return false;
 
         let time = loc.transit_time;
+
+        loc.findByIdSubLoc(this.currentLocation.sub).remove(this.person)
 
         let transit_loc = loc.findByIdSubLoc(sublocate_id)
 
@@ -36,13 +43,15 @@ class Player {
             this.currentLocation.loc = new_loc
             this.currentLocation.sub = new_subloc
 
-            time = (time+new_loc.transit_time)*0.5;
+            console.log(time*new_loc.transit_time)
+            time = (time*new_loc.transit_time);
         }else {
             this.currentLocation.sub = sublocate_id;
         }
         setTimeout(()=>{
+            loc.findByIdSubLoc(this.currentLocation.sub).addPerson(this.person)
             callback();
-        },time)
+        },time);
     }
     get location () {
         let loc = LocationManager.findById(this.currentLocation.loc)
@@ -64,7 +73,7 @@ class UsersManager {
     users = {};
     register(user,name,icon){
         logger.log(`${user.tag} был зарегестрирован как \n- ${name}`)
-        this.users[user.id] = new Player(name,icon)
+        this.users[user.id] = new Player(name,icon,user);
     }
     getPlayerFromId(user_id){
         return this.users[user_id];

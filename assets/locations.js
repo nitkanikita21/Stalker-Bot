@@ -1,5 +1,7 @@
 const npcs = require("./persons.js");
 
+const extra = require("../utils/extra/array.js");
+
 class Location {
     name = "";
     desc = "";
@@ -39,8 +41,17 @@ class SubLocation{
     }
     entityIsTrader(id){
         let npc = this.findEntityById(id);
-        console.log(npc instanceof npcs.Trader)
         return npc instanceof npcs.Trader;
+    }
+    entityIsPlayer(id){
+        let npc = this.findEntityById(id);
+        return npc instanceof npcs.PlayerPeson;
+    }
+    addPerson(pers){
+        this.entitys.push(pers)
+    }
+    remove(pers){
+        this.entitys = extra.delete(this.entitys,pers);
     }
 }
 
