@@ -50,7 +50,7 @@ class MenuManager{
             }
         },
         "LOGIN_SUCCESSFUL":{
-            open:(msg,name)=>{
+            open: async (msg,name)=>{
                 let embed = new Discord.MessageEmbed();
                 embed
                     .setColor("#2f3136")
@@ -63,18 +63,15 @@ class MenuManager{
                         "▶️ - Начать игру"
                     ].join("\n"));
                 
-                msg.channel.send(embed).then(bot_msg=>{
-                    bot_msg.react("▶️").then(react=>{
-                        this.awaitReaction(bot_msg,msg.author,"▶️",()=>{
-                            this.openMenu(msg,"START_GAME_REPLIC",name)
-                        })
-                    })
-                    
-                });
+                let bot_msg = await msg.channel.send(embed)
+                await bot_msg.react("▶️")
+                this.awaitReaction(bot_msg,msg.author,"▶️",()=>{
+                    this.openMenu(msg,"START_GAME_REPLIC",name)
+                })
             }
         },
         "START_GAME_REPLIC":{
-            open:(msg,name)=>{
+            open:async (msg,name)=>{
                 let buttons = [
                     new ButtonMenu("🙄","как с новичком",()=>{
                         this.openMenu(msg,"TUTORIAL",null)
@@ -109,17 +106,13 @@ class MenuManager{
                         }).join("\n"),
                     ].join("\n"));
                 
-                msg.channel.send(embed).then(bot_msg=>{
-                    buttons.forEach(i=>{
-                        bot_msg.react(i.emoji).then(react=>{
-                            this.awaitReaction(
-                                bot_msg,msg.author,
-                                i.emoji,()=>{
-                                    i.onClick();
-                                }
-                            )
-                        })
-                    })
+                let bot_msg = await msg.channel.send(embed)
+                buttons.forEach(async i=>{
+                    await bot_msg.react(i.emoji)
+                    this.awaitReaction(
+                        bot_msg,msg.author,
+                        i.emoji,i.onClick
+                    )
                 })
             }
         },
@@ -192,7 +185,13 @@ class MenuManager{
                     },
                 ]
             },
-            open:(msg,name)=>{
+            open:async (msg,name)=>{
+
+                let buttons = [
+                    new ButtonMenu("▶️",null,()=>{
+                        this.openMenu(msg,"MAIN_MENU",null)
+                    }),
+                ]
 
                 let embed = new Discord.MessageEmbed();
                 embed
@@ -206,26 +205,19 @@ class MenuManager{
                     embed.addField(t.title,t.txt);
                 })
 
-                msg.channel.send(embed).then(bot_msg=>{
-                    let buttons = [
-                        new ButtonMenu("▶️",null,()=>{
-                            this.openMenu(msg,"MAIN_MENU",null)
-                        }),
-                    ]
+                let bot_msg = await msg.channel.send(embed);
 
-                    buttons.forEach(i=>{
-                        bot_msg.react(i.emoji).then(react=>{
-                            this.awaitReaction(
-                                bot_msg,msg.author,
-                                i.emoji,i.onClick
-                            )
-                        })
-                    })
+                buttons.forEach(async i=>{
+                    await bot_msg.react(i.emoji)
+                    this.awaitReaction(
+                        bot_msg,msg.author,
+                        i.emoji,i.onClick
+                    )
                 })
             }
         },
         "MAIN_MENU":{
-            open:(msg)=>{
+            open:async (msg)=>{
                 let mm = this;
                 let buttons = [
                     new ButtonMenu("📱","мой профиль",()=>{
@@ -258,20 +250,18 @@ class MenuManager{
 
                     )
 
-                msg.channel.send(embed).then(bot_msg=>{
-                    buttons.forEach(i=>{
-                        bot_msg.react(i.emoji).then(react=>{
-                            this.awaitReaction(
-                                bot_msg,msg.author,
-                                i.emoji,i.onClick
-                            )
-                        })
-                    })
+                let bot_msg = await msg.channel.send(embed)
+                buttons.forEach(async i=>{
+                    await bot_msg.react(i.emoji)
+                    this.awaitReaction(
+                        bot_msg,msg.author,
+                        i.emoji,i.onClick
+                    )
                 })
             }
         },
         "INVENTORY":{
-            open:(msg)=>{
+            open: async (msg)=>{
                 let mm = this;
                 let buttons = [
                     new ButtonMenu("↩️","главное меню",()=>{
@@ -285,7 +275,7 @@ class MenuManager{
                 let inv_text = [];
 
                 inventory.bag.map((c,i)=>{
-                    inv_text[i] = `${i}. \`${c.name}\` *${c.stringMass}кг*`
+                    inv_text[i] = `${i}. \`${c.count}шт\` \`${c.name}\` *${c.stringMass}кг*`
                 })
 
                 let embed = new Discord.MessageEmbed();
@@ -297,22 +287,19 @@ class MenuManager{
                     .addField("Общая сумма",inventory.totalMass+"кг")
                     .setColor("#2f3136")
 
-                msg.channel.send(embed).then(bot_msg=>{
-                    buttons.forEach(i=>{
-                        bot_msg.react(i.emoji).then(react=>{
-                            this.awaitReaction(
-                                bot_msg,msg.author,
-                                i.emoji,()=>{
-                                    i.onClick();
-                                }
-                            )
-                        })
-                    })
-                });
+                let bot_msg = await msg.channel.send(embed);
+                buttons.forEach(async (i)=>{
+                    await bot_msg.react(i.emoji)
+                    this.awaitReaction(
+                        bot_msg,msg.author,
+                        i.emoji,i.onClick
+                    )
+                })
+
             }
         },
         "PROFILE":{
-            open:(msg)=>{
+            open:async (msg)=>{
                 let mm = this;
                 let buttons = [
                     new ButtonMenu("↩️","главное меню",()=>{
@@ -330,22 +317,18 @@ class MenuManager{
                     .addField("Групировка","`Нереализовано`",true)
                     .setThumbnail(player.person.icon);
                 
-                msg.channel.send(embed).then(bot_msg=>{
-                    buttons.forEach(i=>{
-                        bot_msg.react(i.emoji).then(react=>{
-                            this.awaitReaction(
-                                bot_msg,msg.author,
-                                i.emoji,()=>{
-                                    i.onClick();
-                                }
-                            )
-                        })
-                    })
-                });
+                let bot_msg = await msg.channel.send(embed)
+                buttons.forEach(async i=>{
+                    await bot_msg.react(i.emoji)
+                    this.awaitReaction(
+                        bot_msg,msg.author,
+                        i.emoji,i.onClick
+                    )
+                })
             }
         },
         "LOCATION":{
-            open:(msg)=>{
+            open: async (msg)=>{
                 let mm = this;
                 let buttons = [
                     new ButtonMenu("↩️","главное меню",()=>{
@@ -370,51 +353,45 @@ class MenuManager{
                     .addField("Отправится в:",str.join("\n"))
                     .setFooter("Нажми на номер нужной локации")
 
-                msg.channel.send(embed).then(msg_bot=>{
-                    buttons.forEach(i=>{
-                        msg_bot.react(i.emoji).then(reaction=>{
-                            this.awaitReaction(
-                                msg_bot,msg.author,
-                                i.emoji,()=>{
-                                    reaction.remove(msg.author)
-                                    i.onClick()
-                                }
+                let msg_bot = await msg.channel.send(embed)
+                buttons.forEach(async i=>{
+                    await msg_bot.react(i.emoji)
+                    this.awaitReaction(
+                        msg_bot,msg.author,
+                        i.emoji,i.onClick
+                    )
+                })
+                for(let i = 0; i < locations.length; i++){
+                    await msg_bot.react(extra.getReactFromInt(i))
+                    this.awaitReaction(
+                        msg_bot,
+                        msg.author,
+                        extra.getReactFromInt(i),
+                        ()=>{
+                            msg_bot.edit(
+                                new Discord.MessageEmbed()
+                                .setAuthor("Смена локации")
+                                .setDescription("Это может занять некоторое время...")
                             )
-                        })
-                    })
-                    for(let i = 0; i < locations.length; i++){
-                        msg_bot.react(extra.getReactFromInt(i)).then(reaction=>{
-                            this.awaitReaction(
-                                msg_bot,
-                                msg.author,
-                                extra.getReactFromInt(i),
+                            player.transit(
+                                locations[i].id,
                                 ()=>{
                                     msg_bot.edit(
                                         new Discord.MessageEmbed()
-                                        .setAuthor("Смена локации")
-                                        .setDescription("Это может занять некоторое время...")
+                                        .setColor("#2f3136")
+                                        .setAuthor("ПДА: Местоположение",this.client.user.avatarURL())
+                                        .setDescription(`**${player.location.location.name}**\n   *${player.location.sublocation.name}*`)
                                     )
-                                    player.transit(
-                                        locations[i].id,
-                                        ()=>{
-                                            msg_bot.edit(
-                                                new Discord.MessageEmbed()
-                                                .setColor("#2f3136")
-                                                .setAuthor("ПДА: Местоположение",this.client.user.avatarURL())
-                                                .setDescription(`**${player.location.location.name}**\n   *${player.location.sublocation.name}*`)
-                                            )
-                                        }
-                                    )
-
                                 }
                             )
-                        })
-                    }
-                });  
+
+                        }
+                    )
+                }  
             }
         },
         "NPC":{
-            open:(msg)=>{
+            open: async (msg)=>{
 
                 let mm = this;
                 let buttons = [
@@ -448,72 +425,70 @@ class MenuManager{
                     .addField("Примечание","Взаимодействие доступно только для NPC\nторговцев и квестовых персонажей\n \nДля игроков выводится информация о них")
                     .setFooter("Нажми на номер нужного человека")
 
-                msg.channel.send(embed).then(msg_bot=>{
-                    let reactions = []
-                    buttons.forEach(i=>{
-                        msg_bot.react(i.emoji).then(reaction=>{
-                            this.awaitReaction(
-                                msg_bot,msg.author,
-                                i.emoji,()=>{
-                                    i.onClick();
-                                }
-                            )
-                        })
-                    })
-
-                    for(let i = 0; i < entitys.length; i++){
-                        msg_bot.react(extra.getReactFromInt(i)).then(reaction=>{
-                            let npc = entitys[i]
-                            reactions.push(reaction)
-
-                            this.awaitReaction(
-                                msg_bot,
-                                msg.author,
-                                extra.getReactFromInt(i),
-                                ()=>{
-
-                                    if(subloc.entityIsTrader(entitys[i].id)){
-
-                                        let str_items = []
-                                        npc.trade_list.map((c,i)=>{
-                                            let item = itemManager.findById(c.id)
-                                            str_items[i] = `${i}. \`${item.name}\` *${c.info.cost}RU*`
-                                        })
-
-                                        let embed_trade = new Discord.MessageEmbed();
-                                        embed_trade
-                                            .setColor("#2f3136")
-                                            .setAuthor(`${npc.name}: Предметы в продаже`,npc.icon)
-                                            .setDescription(`**${loc.name}**\n   *${subloc.name}*`)
-                                            .addField("Предметы:",str_items.join("\n"))
-
-                                        msg.channel.send(embed_trade)
-                                    }else if(subloc.entityIsPlayer(entitys[i].id)){
-
-                                        let user_player = usersManager.getPlayerFromId(npc.id);
-                                        console.log(user_player)
-                                        let embed_player = new Discord.MessageEmbed();
-                                        embed_player
-                                            .setColor("#2f3136")
-                                            .setAuthor(`${npc.name}`,npc.icon)
-                                            .addField("Групировка:","`Нереализовано`")
-                                            .setFooter(`${user_player.user.tag} | Discord`,user_player.user.avatarURL())
-                                        msg.channel.send(embed_player)
-                                    }else {
-                                        let embed_entity = new Discord.MessageEmbed();
-                                        embed_entity
-                                            .setColor("#2f3136")
-                                            .setAuthor(npc.name,npc.icon)
-                                            .setDescription(`${npc.desc}`)
-
-                                        msg.channel.send(embed_entity)
-                                    }
-                                }
-                            )
-                        })
-                    }
-
+                let msg_bot = await msg.channel.send(embed)
+                buttons.forEach(async i=>{
+                    await msg_bot.react(i.emoji)
+                    this.awaitReaction(
+                        msg_bot,msg.author,
+                        i.emoji,i.onClick
+                    )
                 })
+
+                for(let i = 0; i < entitys.length; i++){
+                    await msg_bot.react(extra.getReactFromInt(i))
+                    let npc = entitys[i]
+
+                    this.awaitReaction(
+                        msg_bot,
+                        msg.author,
+                        extra.getReactFromInt(i),
+                        ()=>{
+
+                            if(subloc.entityIsTrader(entitys[i].id)){
+
+                                let str_items = []
+                                npc.trade_list.map((c,i)=>{
+                                    let item = itemManager.findById(c.id)
+                                    str_items[i] = `${i}. \`${item.name}\` *${c.info.cost}RU*`
+                                })
+
+                                let embed_trade = new Discord.MessageEmbed();
+                                embed_trade
+                                    .setColor("#2f3136")
+                                    .setAuthor(`${npc.name}: Предметы в продаже`,npc.icon)
+                                    .setDescription(`**${loc.name}**\n   *${subloc.name}*`)
+                                    .addField("Предметы:",str_items.join("\n"))
+
+                                msg.channel.send(embed_trade)
+                            }else if(subloc.entityIsPlayer(entitys[i].id)){
+
+                                let user_player = usersManager.getPlayerFromId(npc.id);
+                                console.log(user_player)
+                                let embed_player = new Discord.MessageEmbed();
+                                embed_player
+                                    .setColor("#2f3136")
+                                    .setAuthor(`${npc.name}`,npc.icon)
+                                    .addField("Групировка:","`Нереализовано`")
+                                    .setFooter(`${user_player.user.tag} | Discord`,user_player.user.avatarURL())
+                                msg.channel.send(embed_player)
+                            }else {
+                                let embed_entity = new Discord.MessageEmbed();
+                                embed_entity
+                                    .setColor("#2f3136")
+                                    .setAuthor(npc.name,npc.icon)
+                                    .setDescription(`${npc.desc}`)
+
+                                msg.channel.send(embed_entity)
+                            }
+                        }
+                    )
+                }    
+            }
+        },
+
+        "SWAP":{
+            open: async (msg,target)=>{
+                
             }
         }
     }

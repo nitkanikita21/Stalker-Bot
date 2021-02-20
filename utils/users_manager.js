@@ -20,7 +20,16 @@ class Player {
         this.user = user;
         this.person = new npc.PlayerPeson(PersonName,ava,user.id);
         this.inventory.add(ItemManager.findById("icon_group"));
+        for(let i = 0; i < 4; i++)
+            this.inventory.add(ItemManager.findById("bread"));
+        
+        this.inventory.add(ItemManager.findById("akm74"));
+        
         this.inventory.armor = ItemManager.findById("test_armor");
+
+        setTimeout(()=>{
+            this.inventory.remove(this.inventory.bag[0]);
+        },6000)
 
         let loc = LocationManager.findById(this.currentLocation.loc)
         loc.findByIdSubLoc(this.currentLocation.sub).addPerson(this.person)
@@ -38,7 +47,7 @@ class Player {
         if(transit_loc.transit !== null){
             let new_loc = transit_loc.transit.locate;
             let new_subloc = transit_loc.transit.sublocation;
-            
+
             this.currentLocation.loc = new_loc
             this.currentLocation.sub = new_subloc
 

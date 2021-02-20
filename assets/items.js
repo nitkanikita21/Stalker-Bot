@@ -80,7 +80,7 @@ module.exports.items = [
         "bread",
         "Буханка хлеба",
         "Ешь вместе с едой",
-        34,
+        500,
         "https://i.imgur.com/WxpE65j.jpg"
     ),
 
