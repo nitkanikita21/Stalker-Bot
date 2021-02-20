@@ -66,9 +66,6 @@ class MenuManager{
                 msg.channel.send(embed).then(bot_msg=>{
                     bot_msg.react("▶️").then(react=>{
                         this.awaitReaction(bot_msg,msg.author,"▶️",()=>{
-                            react.remove(this.client.user);
-                            react.remove(msg.author);
-
                             this.openMenu(msg,"START_GAME_REPLIC",name)
                         })
                     })
@@ -112,25 +109,12 @@ class MenuManager{
                         }).join("\n"),
                     ].join("\n"));
                 
-                let reactions = []
-
-                function delAllReacts (){
-                    reactions.forEach(r=>{
-                        r.remove(client_link.user)
-                    })
-                }
-
-                let client_link = this.client
-
                 msg.channel.send(embed).then(bot_msg=>{
                     buttons.forEach(i=>{
                         bot_msg.react(i.emoji).then(react=>{
-                            reactions.push(react)
                             this.awaitReaction(
                                 bot_msg,msg.author,
                                 i.emoji,()=>{
-                                    delAllReacts();
-                                    react.remove(msg.author)
                                     i.onClick();
                                 }
                             )
@@ -230,19 +214,11 @@ class MenuManager{
                     ]
 
                     buttons.forEach(i=>{
-                        bot_msg.fetch().then(bot_msg_fetched=>{
-                            bot_msg.react(i.emoji).then(react=>{
-                                this.awaitReaction(
-                                    bot_msg,msg.author,
-                                    i.emoji,()=>{
-                                        bot_msg_fetched.reactions.cache.forEach(r=>{
-                                            r.remove(msg.author)
-                                            r.remove(bot_msg.author)
-                                        })
-                                        i.onClick();
-                                    }
-                                )
-                            })
+                        bot_msg.react(i.emoji).then(react=>{
+                            this.awaitReaction(
+                                bot_msg,msg.author,
+                                i.emoji,i.onClick
+                            )
                         })
                     })
                 })
@@ -327,7 +303,6 @@ class MenuManager{
                             this.awaitReaction(
                                 bot_msg,msg.author,
                                 i.emoji,()=>{
-                                    react.remove(msg.author);
                                     i.onClick();
                                 }
                             )
@@ -361,7 +336,6 @@ class MenuManager{
                             this.awaitReaction(
                                 bot_msg,msg.author,
                                 i.emoji,()=>{
-                                    react.remove(msg.author);
                                     i.onClick();
                                 }
                             )
@@ -396,16 +370,6 @@ class MenuManager{
                     .addField("Отправится в:",str.join("\n"))
                     .setFooter("Нажми на номер нужной локации")
 
-                let reactions = []
-                let client_link = this.client;
-
-                function delAllReacts (){
-                    reactions.forEach(r=>{
-                        r.remove(client_link.user)
-                    })
-                }
-
-
                 msg.channel.send(embed).then(msg_bot=>{
                     buttons.forEach(i=>{
                         msg_bot.react(i.emoji).then(reaction=>{
@@ -420,16 +384,11 @@ class MenuManager{
                     })
                     for(let i = 0; i < locations.length; i++){
                         msg_bot.react(extra.getReactFromInt(i)).then(reaction=>{
-                            reactions.push(reaction)
                             this.awaitReaction(
                                 msg_bot,
                                 msg.author,
                                 extra.getReactFromInt(i),
                                 ()=>{
-
-                                    reaction.remove(msg.author)
-                                    delAllReacts();
-
                                     msg_bot.edit(
                                         new Discord.MessageEmbed()
                                         .setAuthor("Смена локации")
@@ -489,25 +448,13 @@ class MenuManager{
                     .addField("Примечание","Взаимодействие доступно только для NPC\nторговцев и квестовых персонажей\n \nДля игроков выводится информация о них")
                     .setFooter("Нажми на номер нужного человека")
 
-                let reactions = []
-
-                let client_link = this.client;
-
-                function delAllReacts (){
-                    reactions.forEach(r=>{
-                        r.remove(client_link.user)
-                    })
-                }
-
                 msg.channel.send(embed).then(msg_bot=>{
                     let reactions = []
                     buttons.forEach(i=>{
                         msg_bot.react(i.emoji).then(reaction=>{
-                            reactions.push(reaction)
                             this.awaitReaction(
                                 msg_bot,msg.author,
                                 i.emoji,()=>{
-                                    reaction.remove(msg.author)
                                     i.onClick();
                                 }
                             )
@@ -524,13 +471,11 @@ class MenuManager{
                                 msg.author,
                                 extra.getReactFromInt(i),
                                 ()=>{
-                                    delAllReacts()
 
                                     if(subloc.entityIsTrader(entitys[i].id)){
 
                                         let str_items = []
                                         npc.trade_list.map((c,i)=>{
-                                            console.log(c)
                                             let item = itemManager.findById(c.id)
                                             str_items[i] = `${i}. \`${item.name}\` *${c.info.cost}RU*`
                                         })
@@ -543,9 +488,8 @@ class MenuManager{
                                             .addField("Предметы:",str_items.join("\n"))
 
                                         msg.channel.send(embed_trade)
-                                    }if(subloc.entityIsPlayer(entitys[i].id)){
+                                    }else if(subloc.entityIsPlayer(entitys[i].id)){
 
-                                        console.log(npc.id)
                                         let user_player = usersManager.getPlayerFromId(npc.id);
                                         console.log(user_player)
                                         let embed_player = new Discord.MessageEmbed();

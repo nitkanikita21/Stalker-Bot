@@ -38,13 +38,12 @@ class Player {
         if(transit_loc.transit !== null){
             let new_loc = transit_loc.transit.locate;
             let new_subloc = transit_loc.transit.sublocation;
-
-            console.log(new_loc,new_subloc)
+            
             this.currentLocation.loc = new_loc
             this.currentLocation.sub = new_subloc
 
-            console.log(time*new_loc.transit_time)
-            time = (time*new_loc.transit_time);
+            loc = LocationManager.findById(new_loc)
+            time = (time+new_loc.transit_time);
         }else {
             this.currentLocation.sub = sublocate_id;
         }
