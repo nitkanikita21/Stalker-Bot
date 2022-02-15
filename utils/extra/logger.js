@@ -12,13 +12,13 @@ class Logger{
         this.MODULE = path.basename(module);
     }
     log(...str){
-        process.stdout.write(`${colors.gray}[${new Date().toLocaleTimeString()}] ${colors.green}[${this.MODULE}]${colors.reset} ${str.join(" ")}\r\n`+colors.reset)
+        process.stdout.write(`${colors.gray}[${new Date().toLocaleTimeString()}] ${colors.green}[${this.MODULE}]${colors.reset}\n${str.join(" ")}\r\n`+colors.reset)
     }
     warn(...str){
-        process.stdout.write(`${colors.gray}[${new Date().toLocaleTimeString()}] ${colors.green}[${this.MODULE}]${colors.yellow} ${str.join(" ")}\r\n`+colors.reset)
+        process.stdout.write(`${colors.gray}[${new Date().toLocaleTimeString()}] ${colors.green}[${this.MODULE}]${colors.yellow}\n${str.join(" ")}\r\n`+colors.reset)
     }
     err(...str){
-        process.stdout.write(`${colors.gray}[${new Date().toLocaleTimeString()}] ${colors.green}[${this.MODULE}]${colors.red} ${str.join(" ")}\r\n`+colors.reset)
+        process.stdout.write(`${colors.gray}[${new Date().toLocaleTimeString()}] ${colors.green}[${this.MODULE}]${colors.red}\n${str.join(" ")}\r\n`+colors.reset)
     }
 }
 module.exports = Logger

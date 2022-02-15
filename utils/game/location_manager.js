@@ -8,7 +8,7 @@ class LocationManager{
         this.locations = require("../../assets/locations.js").locations;
     }
     findById(id){
-        return this.locations.find((i)=>i.id == id);
+        return this.locations.find((i)=>i.id === id);
     }
 }
 

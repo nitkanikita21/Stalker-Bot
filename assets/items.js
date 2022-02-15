@@ -54,11 +54,49 @@ module.exports.items = [
         10,
         "https://i.pinimg.com/originals/77/b6/2d/77b62d8854cae578b63b2f338fb26d0e.png"
     ),
+    new Item(
+        "medicine_chest_standart",
+        "Аптечка",
+        "Ваше спасение",
+        10,
+        "https://i.imgur.com/Q9D6ytg.jpg"
+    ),
+    new Item(
+        "medicine_chest_army",
+        "Армейская аптечка",
+        "Ваше спасение",
+        25,
+        "https://i.imgur.com/pXB4gGx.jpg"
+    ),
+    new Item(
+        "medicine_chest_science",
+        "Научная аптечка",
+        "Ваше спасение",
+        34,
+        "https://i.imgur.com/ec6nnrO.png"
+    ),
+
+    new Item(
+        "bread",
+        "Буханка хлеба",
+        "Ешь вместе с едой",
+        500,
+        "https://i.imgur.com/WxpE65j.jpg"
+    ),
+
+    new Item(
+        "akm74",
+        "АКM-74",
+        "Работает безотказно",
+        40000,
+        "https://i.imgur.com/gAXMr0Y.jpg"
+    ),
+    
     new Armor(
         "test_armor",
-        "Броня грешника",
+        "Тестовая броня",
         "А чё",
         450000,
-        "https://static.wikia.nocookie.net/stalker_ru_gamepedia/images/2/2e/%D0%98%D0%BA%D0%BE%D0%BD%D0%BA%D0%B0_%D0%BA%D0%BE%D0%BC%D0%B1%D0%B8%D0%BD%D0%B5%D0%B7%D0%BE%D0%BD%D0%B0_%D1%81%D1%82%D0%B0%D0%BB%D0%BA%D0%B5%D1%80%D0%B0.jpg/revision/latest/scale-to-width-down/250?cb=20170724225746"
+        "https://static.wikia.nocookie.net/modistalker/images/5/5e/9190166.gif/revision/latest?cb=20171014155446&path-prefix=ru"
     )
 ]

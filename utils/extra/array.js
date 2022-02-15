@@ -1,5 +1,5 @@
 module.exports = {
-    delete: (arr,item)=>{
+    delete: (arr,value)=>{
         return arr.filter(item => item !== value);
     }
 }

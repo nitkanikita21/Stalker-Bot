@@ -9,6 +9,7 @@ const logger = new extra_log(__filename);
 
 function Start(){
     client.on("message",(msg)=>{
+        if(!msg.content.startsWith(config.command.prefix))return;
         let name = msg.content.split(" ")[0];
         name = name.replace(config.command.prefix,"");
 
@@ -16,6 +17,10 @@ function Start(){
     })
     client.on("ready",()=>{
         logger.log("Bot online")
+        client.user.setActivity({
+            type:"WATCHING",
+            name:config.client.status
+        });
     })
 
     client.login(require("../ds.json").token)

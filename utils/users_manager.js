@@ -2,19 +2,64 @@ const npc = require("../assets/persons.js");
 const Inventory = require("../assets/inventory.js");
 const LocationManager = require("./game/location_manager.js");
 const ItemManager = require("./game/item_manager.js");
+
+const extra_log = require("./extra/logger.js");
+const logger = new extra_log(__filename);
+
 class Player {
-    person = new npc.Person();
+    person = new npc.PlayerPeson();
     inventory = new Inventory();
+    user = {}
     currentLocation = {
         loc:"kordon",
         sub:"novice_village"
     }
 
 
-    constructor(PersonName,ava){
-        this.person = new npc.Person(PersonName,ava);
+    constructor(PersonName,ava,user){
+        this.user = user;
+        this.person = new npc.PlayerPeson(PersonName,ava,user.id);
         this.inventory.add(ItemManager.findById("icon_group"));
+        for(let i = 0; i < 4; i++)
+            this.inventory.add(ItemManager.findById("bread"));
+        
+        this.inventory.add(ItemManager.findById("akm74"));
+        
         this.inventory.armor = ItemManager.findById("test_armor");
+
+        setTimeout(()=>{
+            this.inventory.remove(this.inventory.bag[0]);
+        },6000)
+
+        let loc = LocationManager.findById(this.currentLocation.loc)
+        loc.findByIdSubLoc(this.currentLocation.sub).addPerson(this.person)
+    }
+    transit(sublocate_id,callback){
+        let loc = LocationManager.findById(this.currentLocation.loc)
+        if(loc.findByIdSubLoc(sublocate_id) === undefined)return false;
+
+        let time = loc.transit_time;
+
+        loc.findByIdSubLoc(this.currentLocation.sub).remove(this.person)
+
+        let transit_loc = loc.findByIdSubLoc(sublocate_id)
+
+        if(transit_loc.transit !== null){
+            let new_loc = transit_loc.transit.locate;
+            let new_subloc = transit_loc.transit.sublocation;
+
+            this.currentLocation.loc = new_loc
+            this.currentLocation.sub = new_subloc
+
+            loc = LocationManager.findById(new_loc)
+            time = (time+new_loc.transit_time);
+        }else {
+            this.currentLocation.sub = sublocate_id;
+        }
+        setTimeout(()=>{
+            loc.findByIdSubLoc(this.currentLocation.sub).addPerson(this.person)
+            callback();
+        },time);
     }
     get location () {
         let loc = LocationManager.findById(this.currentLocation.loc)
@@ -27,7 +72,6 @@ class Player {
     get allSubLocations () {
         let loc = LocationManager.findById(this.currentLocation.loc);
         let sublocations = loc.allSubLoc;
-        console.log(sublocations)
         return sublocations.filter(i=>i.id !== this.currentLocation.sub);
     }
 }
@@ -35,11 +79,16 @@ class Player {
 
 class UsersManager {
     users = {};
-    register(user_id,name,icon){
-        this.users[user_id] = new Player(name,icon)
+    register(user,name,icon){
+        logger.log(`${user.tag} был зарегестрирован как \n- ${name}`)
+        this.users[user.id] = new Player(name,icon,user);
     }
     getPlayerFromId(user_id){
         return this.users[user_id];
+    }
+    checkRegUser(id){
+        if(this.users[id] !== undefined)return true;
+        else return false;
     }
 }
 
